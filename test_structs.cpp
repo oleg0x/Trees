@@ -26,6 +26,14 @@ KeyStruct::~KeyStruct()
 
 
 
+KeyStruct& KeyStruct::operator=(const KeyStruct& ks)
+{
+	data = ks.data;
+	return *this;
+}
+
+
+
 bool operator ==(const KeyStruct& lhs, const KeyStruct& rhs)
 {
 	return lhs.data == rhs.data;

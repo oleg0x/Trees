@@ -11,6 +11,7 @@ struct KeyStruct
 	explicit KeyStruct(int d);
 	KeyStruct(const KeyStruct& ks);
 	~KeyStruct();
+	KeyStruct& operator =(const KeyStruct& ks);
 	int data;
 };
 

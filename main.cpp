@@ -14,6 +14,10 @@ void EraseTest();
 void TraverseTest();
 void OperEqualTest();
 
+void RBTPutGetTest();
+void RBTEraseTest();
+void RBTEraseTest2();
+
 
 
 int main()
@@ -40,5 +44,8 @@ int main()
 	TraverseTest();
 	
 	OperEqualTest();
+
+	RBTPutGetTest();
+	RBTEraseTest();
+	RBTEraseTest2();
 }
- 

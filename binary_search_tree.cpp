@@ -113,6 +113,15 @@ BinarySearchTree<KeyType, ValueType>::operator=(BinarySearchTree&& other)
 
 
 template <typename KeyType, typename ValueType>
+const typename BinarySearchTree<KeyType, ValueType>::Node*
+BinarySearchTree<KeyType, ValueType>::GetRoot() const
+{
+	return this->root_;
+}
+
+
+
+template <typename KeyType, typename ValueType>
 CountType BinarySearchTree<KeyType, ValueType>::Size() const
 {
 	return size_;
@@ -123,7 +132,8 @@ CountType BinarySearchTree<KeyType, ValueType>::Size() const
 template <typename KeyType, typename ValueType>
 bool BinarySearchTree<KeyType, ValueType>::Empty() const
 {
-	return size_ == 0;
+//	return size_ == 0;
+	return !root_;
 };
 
 
@@ -172,7 +182,7 @@ bool BinarySearchTree<KeyType, ValueType>::Insert(KeyType&& key, ValueType&& val
 
 template <typename KeyType, typename ValueType>
 typename BinarySearchTree<KeyType, ValueType>::Node*
-BinarySearchTree<KeyType, ValueType>::Put(Node* node, const KeyType key, const ValueType value)
+BinarySearchTree<KeyType, ValueType>::Put(Node* node, const KeyType& key, const ValueType& value)
 {
 	if ( !node )
 	{
@@ -189,7 +199,7 @@ BinarySearchTree<KeyType, ValueType>::Put(Node* node, const KeyType key, const V
 
 
 template <typename KeyType, typename ValueType>
-void BinarySearchTree<KeyType, ValueType>::Put(const KeyType key, const ValueType value)
+void BinarySearchTree<KeyType, ValueType>::Put(const KeyType& key, const ValueType& value)
 {
 	root_ = Put(root_, key, value);
 }
@@ -201,13 +211,12 @@ void BinarySearchTree<KeyType, ValueType>::Put(const KeyType key, const ValueTyp
 template <typename KeyType, typename ValueType>
 ValueType& BinarySearchTree<KeyType, ValueType>::At(const KeyType& key)
 {
-	Node** node = &root_;  // Using pointer-to-pointer lets avoid checking of insertion to the root
-	while ( *node )
-	{ 
-		const KeyType& cur_key = (*node)->key;
-		if      (key < cur_key)  node = &(*node)->left;
-		else if (key > cur_key)  node = &(*node)->right;
-		else  return (*node)->value;
+	Node* node = root_;	
+	while ( node )
+	{
+		if      ( key < node->key )  node = node->left;
+		else if ( key > node->key )  node = node->right;
+		else  return node->value;
 	}
 	throw std::out_of_range("Key not found!");
 }
@@ -217,13 +226,12 @@ ValueType& BinarySearchTree<KeyType, ValueType>::At(const KeyType& key)
 template <typename KeyType, typename ValueType>
 const ValueType& BinarySearchTree<KeyType, ValueType>::At(const KeyType& key) const
 {
-	Node* const* node = &root_;  // Using pointer-to-pointer lets avoid checking of insertion to the root
-	while ( *node )
-	{ 
-		const KeyType& cur_key = (*node)->key;
-		if      (key < cur_key)  node = &(*node)->left;
-		else if (key > cur_key)  node = &(*node)->right;
-		else  return (*node)->value;
+	Node* node = root_;
+	while ( node )
+	{
+		if      ( key < node->key )  node = node->left;
+		else if ( key > node->key )  node = node->right;
+		else  return node->value;
 	}
 	throw std::out_of_range("Key not found!");
 }
@@ -231,7 +239,7 @@ const ValueType& BinarySearchTree<KeyType, ValueType>::At(const KeyType& key) co
 
 
 template <typename KeyType, typename ValueType>
-optional<ValueType> BinarySearchTree<KeyType, ValueType>::Get(KeyType key) const
+optional<ValueType> BinarySearchTree<KeyType, ValueType>::Get(const KeyType& key) const
 {
 	Node* node = root_;
 	while ( node )
@@ -311,7 +319,7 @@ BinarySearchTree<KeyType, ValueType>::MaxKey(Node* node) const
 
 template <typename KeyType, typename ValueType>
 typename BinarySearchTree<KeyType, ValueType>::Node* 
-BinarySearchTree<KeyType, ValueType>::FloorKey(Node* node, KeyType key) const
+BinarySearchTree<KeyType, ValueType>::FloorKey(Node* node, const KeyType& key) const
 {
 	if ( !node )  return nullptr;
 	if ( key == node->key )  return node;
@@ -334,7 +342,7 @@ KeyType& BinarySearchTree<KeyType, ValueType>::FloorKey(const KeyType& key) cons
 
 template <typename KeyType, typename ValueType>
 typename BinarySearchTree<KeyType, ValueType>::Node* 
-BinarySearchTree<KeyType, ValueType>::CeilingKey(Node* node, KeyType key) const
+BinarySearchTree<KeyType, ValueType>::CeilingKey(Node* node, const KeyType& key) const
 {
 	if ( !node )  return nullptr;
 	if ( key == node->key )  return node;
@@ -487,11 +495,6 @@ template <typename KeyType, typename ValueType>
 bool Compare(typename BinarySearchTree<KeyType, ValueType>::Node* n1, 
              typename BinarySearchTree<KeyType, ValueType>::Node* n2)
 {
-/*	return n1 && n2 
-		? n1->key == n2->key && Compare<KeyType, ValueType>(n1->left, n2->left) && 
-			Compare<KeyType, ValueType>(n1->right, n2->right)
-		: !n1 && !n2;*/
-	
 	if ( n1 && n2 )
 		return n1->key == n2->key && n1->value == n2->value &&
 			Compare<KeyType, ValueType>(n1->left, n2->left) && 
